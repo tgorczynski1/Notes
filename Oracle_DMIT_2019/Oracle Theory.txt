@@ -344,6 +344,15 @@ END PKG_STUDENT;
 
 SHOW ERRORS;
 
+EXCEPTION Examples
+
+WHEN others THEN
+	IF SQLCODE = -6511 THEN -- will fire if a cursor problem exists 
+	-- do something
+	END IF;
+
+end;
+
 
 
 
