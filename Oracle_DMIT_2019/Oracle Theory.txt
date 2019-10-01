@@ -1,0 +1,376 @@
+Glossary 
+
+(D) Deprecated - outdated
+
+Naming Convention 
+
+(Alphanumeric)XXXXX 
+No #, $, - interferes with system tables
+use underscore to replace spaces 
+
+Data Values
+
+Varchar(D)
+Chars - specific amount of character(s)
+Varchar2 - unspecific amount of characters 
+
+Numeric
+Number(4,2) (precision [total number of digits], scale [decimal points])
+-can be negative
+-does not count symbols ( - ) ( , ) 
+-default to (X, 0) if no decimal places
+int
+bigint
+smallint
+money
+smallmoney
+decimal 
+
+NULL - a space in memory that is undefined (1 or 2) 
+
+Date
+Datetime(D)
+smalldatetime
+Datetime2
+default is
+DAY-MONTH-YEAR
+
+TWO DIGIT DAY, THREE DIGIT MONTH, 4 DIGIT YEAR
+
+Constraint - rules about the database
+
+
+Example
+--------------------------------------
+
+CREATE TABLE EXAMPLE
+
+CREATE TALBE MM_Student 
+( SID Number(8,0)
+	Constraint PK_MMSTUDENT_SID Primary Key 
+	Constraint NN_MMSTUDENT_SID NOT NULL,
+SNAME VARCHAR2 (50) DEFAULT 'unknown' 
+	Constraint NL_MMSTUDENT_SNAME NULL, 
+Gender CHAR (1) 
+	Constraint CK_MMSTUDENT_GENDER_FMN Check( GENDER In ('F', 'M', 'N')
+	Constraint NN_MMSTUDENT_GENDER NOT NULL, 
+EDate Date 
+	Constraint DEFAULT SYSDATE
+	Constraint NN_MMSTUDENT_EDATE NOT NULL
+
+);
+
+sequence, sequential 
+ascending/decending order of numbers that is assigned to you 
+
+Scripts - 
+A sequence of text  (commands) in a text file
+
+Procedures/Functions
+
+SHOW ERRORS
+
+Show Errors {PROCEDURE || FUNCTION || PACKAGE} [Function Name] [Procedure Name] [Package Name] ;
+
+
+[] - Optional
+
+{} - This or that
+
+<> =  User input
+
+/ - ending of a block statements
+
+P
+- doesnt return a value
+- can not appear in an assignment statement
+- can not appear in an sql statement
+
+F
+
+- does return a value
+- can appear on the right side of an assignment statement
+- can appear in an sql statement
+
+
+Example
+--------------------------------------
+
+CREATE [OR REPLACE] PROCEDURE <PR_UPDATE_MARK1>
+(P_SID NUMBER, P_CID CHAR, P_MARK NUMBER)
+{IS || AS}
+BEGIN
+	UPDATE MM_GRADE
+	SET MARK = P_MARK
+	WHERE SID = PSID AND
+	CID = P_CID;
+END PR_UPDATE_MARK1;
+/
+
+CREATE PROCEDURE PR_UPDATE_MARK2
+	(P_SNAME VARCHAR2, P_CNAME VARCHAR2, P_MARK NUMBER)
+IS
+	V_SID NUMBER (8,0); // MM_STUDENT.SID%TYPE;
+	V_CID CHAR (8);
+BEGIN
+	SELECT SID
+	INTO V_SID
+	FROM MM_STUDENT
+	WHERE SNAME = P_SNAME;
+
+	SELECT CID
+	INTO V_CID
+	FROM MM_COURSE
+	WHERE CNAME = P_CNAME;
+
+	UPDATE MM_GRADE
+	SET MARK = P_MARK
+	WHERE SID = V_SID AND
+	CID = V_CID;
+
+
+END PR_UPDATE_MARK2;
+/
+
+--two questions, why initialize local variable
+
+CREATE [OR REPLACE] PROCEDURE <PR_UPDATE_MARK1>
+(P_SID NUMBER, P_CID CHAR, P_MARK NUMBER)
+{IS || AS}
+	V_MARK NUMBER(5,2); 
+	E_MARK_BAD EXCEPTION;
+BEGIN
+	if P_MARK BETWEEN 0 AND 100 THEN
+		(SELECT mark INTO V_MARK FROM MM_GRADE WHERE SID = P_SID AND UPPER(CID) = UPPER(P_CID);) 
+			UPDATE MM_GRADE
+			SET MARK = P_MARK
+			WHERE SID = PSID AND
+			CID = P_CID;
+	ELSE RAISE E_MARK_BAD;
+	ENDIF;
+EXCEPTION 
+	When NO_DATA_FOUND THEN
+		RAISE_APPLICATION_ERROR(-20100, 'No record found... ');
+	When E_MARK_BAD THEN
+		RAISE_APPLICATION_ERROR(-20999, 'Mark cannot be less than 0 or more than 100' );
+	WHEN OTHERS THEN
+		RAISE_APPLICATION_ERROR(-20400, 'CONTACT TECH SUPPORT' ); -- dont do this
+END PR_UPDATE_MARK1;
+/
+SHOW ERRORS;
+
+Functions
+
+Are the same as procedures, but returns a value. Should not be used to manipulate data (update, delete) 
+
+
+Example
+--------------------------------------
+
+CREATE [or Replace] FUNCTION FN_GET_SNAME
+(P_SID Number)
+RETURN varchar2
+IS
+	V_SNAME Varchar2(5,0);
+Begin
+	Select SNAME
+	INTO V_SNAME
+	FROM MM_Student 
+	WHERE SID = P_SID;
+REUTRN V_SNAME
+End FN_GET_SNAME
+/
+
+SHOW ERRORS;
+
+CREATE [or Replace] FUNCTION FN_GET_SNAME_AND_EDATE
+	(P_SID NUMBER)
+RETURN Varchar2
+IS
+	V_SAME Varchar2 (50);
+	V_EDATE DATE;
+	V_OUTPUT Varchar2(75);
+BEGIN
+	SELECT SNAME, EDATE
+	INTO V_SNAME, V_EDATE
+	FROM MM_STUDENT
+	WHERE SNAME = V_SNAME
+
+V_OUTPUT := V_SNAME || TO_CHAR (V_EDATE; 'DD-MON-YYYY');
+
+RETURN V_OUTPUT
+
+END FN_GET_SNAME_AND_EDATE;
+/
+
+CREATE or REPLACE FUNCTION FN_SHOW_COURSE_ENROLLMENTS
+	(P_CID CHAR)
+RETURN Varchar2
+IS
+	V_CNAME Varchar2(50);
+	V_OUTPUT Varchar2(70);
+	V_COUNT Number(4,0);
+
+BEGIN
+	SELECT CNAME 
+	INTO V_CNAME
+	FROM MM_COURSE
+	WHERE CNAME = V_CNAME;
+
+	SELECT COUNT(SID)
+	INTO V_COUNT
+	FROM MM_GRADE
+	WHERE SID = V_SID
+
+	V_OUTPUT := 'The Course' || V_CNAME;
+
+	IF V_COUNT = 0 THEN
+		V_OUTPUT := V_OUTPUT || 'Is Empty';
+	ELSIF V_COUNT < 26 THEN
+		V_OUTPUT := V_OUTPUT || 'Has || TO_CHAR(V_COUNT) || Students'
+	Else V_OUTPUT := V_OUTPUT 'IS FULL';
+
+RETURN V_OUTPUT;
+
+End FN_SHOW_COURSE_ENROLLMENTS
+/
+
+Packages
+can contain... 
+
+Global Variable declarations
+Cursors 
+Functions
+Procedures
+
+Example
+--------------------------------------
+Create or Replace Package PKG_STUDENT
+IS
+	Procedure PKG_PR_UPDATE_MMGRADE (P_SID NUBMER, P_CID CHAR, P_MARK NUMBER);
+	Function PKG_FN_GETSNAME (P_SID NUMBER);
+Return VARCHAR2;
+
+END PKG_STUDENT;
+/
+
+SHOW ERRORS;
+
+CREATE or REPLACE PACKAGE BODY PKG_STUDENT
+IS
+	PROCEDURE PKG_PR_UPDATE_MMGRADE (P_SID NUMBER, P_CID CHAR, P_MARK NUMBER)
+AS
+BEGIN
+	UPDATE MM_GRADE
+	SET MARK = P_MARK
+	WHERE SID = P_SID AND
+	CID = P_CID
+END PKG_PR_UPDATES_MMGRADE;
+
+	FUNCTION PKG_FN_GET_SNAME (P_SID NUMBER)
+RETURN VARCHAR2;
+IS
+V_SNAME VARCHAR2(50);
+BEGIN
+	SELECT SNAME
+	INTO V_SNAME
+	FROM MM_STUDENT
+	WHERE SID = P_SID;
+RETURN V_SNAME
+
+END PKG_FN_GET_SNAME;
+
+END PKG_STUDENT;
+/
+
+Packages Cont.
+------------------------
+
+are used for organizations and overloading functions
+
+Overloaded Function Ex~
+
+SPECIFICATION OF PACKAGE
+
+Create or Replace Package PKG_STUDENT 
+IS
+	FUNCTION PKG_GET_EDATE (P_SID NUMBER)
+	RETURN DATE;
+
+	FUNCTION PKG_GET_EDATE (P_SNAME VARCHAR2)
+	RETURN DATE;
+
+
+END PKG_STUDENT
+
+/
+
+BODY OF PACKAGE
+
+CREATE or REPLACE PACKAGE BODY PKG_STUDENT
+IS
+	FUNCTION PKG_FN_GET_EDATE (P_SID NUMBER)
+	RETURN DATE
+IS
+	V_EDATE DATE;
+BEGIN
+	SELECT EDATE
+	INTO V_EDATE
+	FROM MM_STUDENT
+	WHERE SID = P_SID;
+
+RETURN V_EDATE;
+
+END PKG_FN_GET_EDATE
+/
+
+FUNCTION PKG_FN_GET_EDATE (P_SNAME Varchar2)
+	RETURN DATE
+IS	
+	V_EDATE DATE;
+BEGIN
+	SELECT EDATE
+	INTO V_EDATE
+	FROM MM_STUDENT 
+	WHERE SNAME = P_SNAME;
+
+RETURN V_EDATE;
+
+END PKG_FN_GET_EDATE;
+
+END PKG_STUDENT; 
+
+/ 
+
+SHOW ERRORS;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
