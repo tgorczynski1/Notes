@@ -353,8 +353,29 @@ WHEN others THEN
 
 end;
 
+-----------------------------------------------------------------------------------------------
+TRIGGERS
+-----------------------------------------------------------------------------------------------
 
+A named pl/sql block that executes in response to a specifc database event
 
+Purposes
+	1.maintain data integrity
+	2.enforce complex business rules
+	3.audit information (who did what) 
+
+CREATE OR REPLACE TRIGGER TR_B(efore)I(nsert)U(pdate)R(ow)_MMGRADE_NO_IST
+BEFORE INSERT
+FOR EACH ROW
+BEGIN 
+	IF SUBSTR(:NEW.CID, 1, 3) = 'IST' THEN
+		RAISE_APPLICATION_ERROR(-20010, 'IST courses no longer allowed');
+	END IF;
+
+END TR_
+/
+
+SHOW ERRORS;
 
 
 
