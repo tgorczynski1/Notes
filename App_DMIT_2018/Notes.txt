@@ -5,6 +5,6 @@ POCO - Plain Old CLR Object
 		-only properties
 		-data types are primitive
 
-DTO - properties can be complex types (classes, objects, etc)
+DataTransferObject - properties can be complex types (classes, objects, etc)
 
 Business Object - Methods will have a business focus
