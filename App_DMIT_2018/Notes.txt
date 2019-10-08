@@ -1,0 +1,10 @@
+Web Application Notes
+
+POCO - Plain Old CLR Object
+	clr == Common Language Runtime
+		-only properties
+		-data types are primitive
+
+DataTransferObject - properties can be complex types (classes, objects, etc)
+
+Business Object - Methods will have a business focus
