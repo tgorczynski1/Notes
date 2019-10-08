@@ -377,8 +377,22 @@ END TR_
 
 SHOW ERRORS;
 
+CREATE OR REPLACE TRIGGER TR_BIR_MMSTUDENT_PK_SET
+BEFORE INSERT -- before/after insert happens
+ON MM_STUDENT
+FOR EACH ROW -- if you use the virtual tables, you must use a row level trigger
+DECLARE
+	V_SID NUMBER (8,0);
+	
+BEGIN
+	SELECT 	SID_SEQ.NEXTVAL
+	INTO	V_SID
+	FROM	DUAL;
+	:NEW.SID := V_SID;
 
-
+END TR_BIR_MMSTUDENT_PK_SET;
+/
+SHOW ERRORS;
 
 
 
