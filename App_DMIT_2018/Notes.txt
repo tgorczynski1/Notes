@@ -19,7 +19,8 @@ public void Theatres_Delete(theatre item)
 
 }
 
-
+-- this method selects a DTO, then a POCO
+-- to return the selected data
 
 using (var context = new OMSTContext())
 {
@@ -40,11 +41,22 @@ var result = from place in context.Locations
 }
 
 
+example of repeater
 
-
-
-
-
+<asp:Repeater ID="LocationRepeater" runat="server" DataSourceID="DataStuff"
+ItemType="OMST.Data.POCOs.TheatrePOCO">
+	<HeaderTemplate>
+		<table class="table">
+			<tr>
+				<th> Theatre</th>
+				<th> Seating</th>
+			</tr>
+	</HeaderTemplate>
+	<ItemTemplate>
+		<b><%# Item.XXXXX %></b>
+	</ItemTemplate>
+	<FooterTemplate>
+	</FooterTemplate>
 
 
 
