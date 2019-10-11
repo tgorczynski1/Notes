@@ -8,3 +8,43 @@ POCO - Plain Old CLR Object
 DataTransferObject - properties can be complex types (classes, objects, etc)
 
 Business Object - Methods will have a business focus
+
+public void Theatres_Delete(theatre item)
+{
+	using (var context = new OMSTContext())
+	{
+		Theatres_Delete
+
+	}
+
+}
+
+
+
+using (var context = new OMSTContext())
+{
+var result = from place in context.Locations
+	select new LocationDTO
+	{
+		Description = place.Description,
+		Phone = place.Phone,
+		TheatreStats = from cinema in place.Theatres
+			select new Theatre POCO
+			{
+				TheatreNumber = cinema.TheatreNumber,
+				SeatingSIze = cinema.SeatingSize	
+
+			}
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
