@@ -45,7 +45,7 @@ Example
 
 CREATE TABLE EXAMPLE
 
-CREATE TALBE MM_Student 
+CREATE TABLE MM_Student 
 ( SID Number(8,0)
 	Constraint PK_MMSTUDENT_SID Primary Key 
 	Constraint NN_MMSTUDENT_SID NOT NULL,
@@ -54,14 +54,15 @@ SNAME VARCHAR2 (50) DEFAULT 'unknown'
 Gender CHAR (1) 
 	Constraint CK_MMSTUDENT_GENDER_FMN Check( GENDER In ('F', 'M', 'N')
 	Constraint NN_MMSTUDENT_GENDER NOT NULL, 
-EDate Date 
-	Constraint DEFAULT SYSDATE
+EDate Date DEFAULT SYSDATE
 	Constraint NN_MMSTUDENT_EDATE NOT NULL
 
 );
 
 sequence, sequential 
 ascending/decending order of numbers that is assigned to you 
+
+~~~~~~END OF CLASS 2 
 
 Scripts - 
 A sequence of text  (commands) in a text file
