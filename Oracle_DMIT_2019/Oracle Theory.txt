@@ -41,7 +41,7 @@ Constraint - rules about the database
 
 
 Example
---------------------------------------
+----------------------------------------------------------------------------
 
 CREATE TABLE EXAMPLE
 
@@ -95,7 +95,7 @@ F
 
 
 Example
---------------------------------------
+----------------------------------------------------------------------------
 
 CREATE [OR REPLACE] PROCEDURE <PR_UPDATE_MARK1>
 (P_SID NUMBER, P_CID CHAR, P_MARK NUMBER)
@@ -166,7 +166,7 @@ Are the same as procedures, but returns a value. Should not be used to manipulat
 
 
 Example
---------------------------------------
+----------------------------------------------------------------------------
 
 CREATE [or Replace] FUNCTION FN_GET_SNAME
 (P_SID Number)
@@ -235,6 +235,25 @@ RETURN V_OUTPUT;
 
 End FN_SHOW_COURSE_ENROLLMENTS
 /
+
+Column Formatting
+
+Set Pagesize 99
+Set Linesize 132
+Column Portfolio_Number Format A9 (Characters - 9 only) Heading "PortfolioNumber"
+Column Transaction_Date Format A20 (Characters - 20 only) Heading "PortfolioNumber"
+Column Price_Per_Share Format A11 (Characters - 11 only) Heading "Price|Per|Share"
+Column Buy_Sell Format A4 Heading "Buy|Sell" (| seperates segments of characters into new lines)
+Column Broker_Number Format A7 Heading "Broker|Number" Justify Right
+Select Portfolio_Number,
+	to_char(Transcation_Date, 'YYYY-MON-DD HH24:MI:SS) Transaction_Date 
+	Stock_Code, Exchange_Code,
+	TO_CHAR(Price_Per_Share, '$9,999.99') Price_Per_Share
+	... columns .... 
+From Transcation
+Where Portfoilio_Number >535;
+
+----------------------------------------------------------------------------
 
 Packages
 can contain... 
