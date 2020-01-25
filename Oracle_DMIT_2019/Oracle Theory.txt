@@ -374,6 +374,34 @@ WHEN others THEN
 end;
 
 -----------------------------------------------------------------------------------------------
+Cursors
+-----------------------------------------------------------------------------------------------
+Create or Replace Procedure grade_update 
+IS
+v_mark char(8);
+v_sid Number(8,0);
+v_cid Number(5,2); 
+[RCOPY C_GRADE%ROWTYPE;]
+Cursor C_Grades is select CID,SID,Mark
+		from mm_grade 
+		where Mark <50 || mark >= 80;
+BEGIN
+Open C_Grades;
+FETCH C_Grades into V_CID, V_SID, V_MARK;
+While C_Grades%Found Loop
+  if V_MARK < 50 THEN
+	INSERT INTO MM_HELP (CID, SID, MARK)
+	Values (V_CID, V_SID, V_MARK);[RCOPY.CID, RCOPY.SID, RCOPY.MARK];
+  else 
+	INSERT INTO MM_HONOURS (CID, SID, MARK);
+	VALUES (V_CID, V_SID, V_MARK);
+  end if;
+FETCH C_Grades INTO V_CID, V_SID, V_MARK;
+end loop;
+close C_Grades;
+END grade_update;
+
+-----------------------------------------------------------------------------------------------
 TRIGGERS
 -----------------------------------------------------------------------------------------------
 
