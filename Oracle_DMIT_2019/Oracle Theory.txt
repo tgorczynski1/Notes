@@ -236,8 +236,40 @@ RETURN V_OUTPUT;
 End FN_SHOW_COURSE_ENROLLMENTS
 /
 
-Column Formatting
+CREATE OR REPLACE FUNCATION fn_show_course_name_and_marks
+(P_SID Number)
+Return Varchar2
+IS
+	V_CNAME Varchar2(50);
+	V_MARK Number(5,2);
+	V_OUTPUT Varchar2(1500);
+	CURSOR C_CNAMES IS 	SELECT C.CNAME, G.MARK
+				FROM MM_COURSE C, MM_GRADE G
+				WHERE G.SID = P_SID AND
+				G_CID = C.CID;
+Begin
+OPEN C_CNAMES;
+	FETCH C_CNAMES INTO V_CNAME, V_MARK
+   IF V_CNAMES%NOTFOUND THEN
+	V_OUTPUT := 'The Student ' || TO_CHAR(P_SID) || 'Did not take any courses'
+   ELSE
+	WHILE C_CNAMES%FOUNDLOOP
+		V_OUTPUT :+ V_OUTPUT || V_CNAME || '##' || TO_CHAR(V_MARK) || '##';
+		FETCH C_CNAMES INTO V_CNAME
+	END LOOP;
+   END IF;
+CLOSE C_NAMES;
+RETURN V_OUTPUT;
+END fn_show_course_name_and_marks;
+/
+Show Errors;
 
+
+
+
+-----------------------------------------------------------------------------------------------------
+Column Formatting
+-----------------------------------------------------------------------------------------------------
 Set Pagesize 99
 Set Linesize 132
 Column Portfolio_Number Format A9 (Characters - 9 only) Heading "PortfolioNumber"
