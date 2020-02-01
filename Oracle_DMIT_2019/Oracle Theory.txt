@@ -203,6 +203,7 @@ RETURN V_OUTPUT
 
 END FN_GET_SNAME_AND_EDATE;
 /
+------
 
 CREATE or REPLACE FUNCTION FN_SHOW_COURSE_ENROLLMENTS
 	(P_CID CHAR)
@@ -263,8 +264,6 @@ RETURN V_OUTPUT;
 END fn_show_course_name_and_marks;
 /
 Show Errors;
-
-
 
 
 -----------------------------------------------------------------------------------------------------
@@ -395,16 +394,47 @@ END PKG_STUDENT;
 / 
 
 SHOW ERRORS;
-
+----------------------------------------------------------------------------------------------
 EXCEPTION Examples
-
+----------------------------------------------------------------------------------------------
 WHEN others THEN
 	IF SQLCODE = -6511 THEN -- will fire if a cursor problem exists 
 	-- do something
 	END IF;
 
 end;
+DO NOT USE RAISE APPLICATION ERROR IN FUNCTION
 
+CREATE OR REPLACE PROCEDURE PR_UPDATE_MARK1
+	(P_SID Number, P_CID Char, P_Mark Number)
+AS
+	V_MARK Number (5,2);
+	E_InvalidMark EXCEPTION;
+  Begin
+	IF P_Mark Between 0 AND 100 THEN
+		Select Mark
+		Into V_MARK
+		FROM MM_GRADE	
+		WHERE SID = P_SID AND
+		UPPER(CID) UPPER(P_CID);
+			UPDATE MM_GRADE
+			SET MARK=_MARK
+			WHERE SID = P_SID AND UPPER(CID) = UPPER(P_CID);
+	Else
+		Raise E_INVALID_MARK;
+	End if;
+	Exception
+	  when NO_DATA_FOUND Then
+		Raise_APPLICATION_ERROR(-20700, 'No student exists');
+	  When E_INVALID_MARK THEN
+		RAISE_APPLICATION_ERROR(-20666, 'Mark cannot be under 0 or over 100');
+	  When Others THEN
+		RAISE_APPLICATION_ERROR(-20123, 'Contact Tech Support');
+END PR_UPDATE_MARK1;
+/
+SHOW ERRORS;
+
+------
 -----------------------------------------------------------------------------------------------
 Cursors
 -----------------------------------------------------------------------------------------------
