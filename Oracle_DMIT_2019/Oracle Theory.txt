@@ -505,9 +505,41 @@ END TR_BIR_MMSTUDENT_PK_SET;
 /
 SHOW ERRORS;
 
+CREATE OR REPLACE TRIGGER TR_BIS_MMSTUDENT_STOP_WEEKEND
+BEFORE INSERT
+ON MM_STUDENT
+FOR EACH ROW
+	BEGIN
+	IF TO CHAR(SYSDATE, 'Day' ) IN ('Saturday', 'Sunday') THEN
+		RAISE_APPLICATION_ERROR (-20001, 'no working on the weekend');
+	END If;
+
+END TR_BIS_MMSTUDENT_STOP_WEEKEND;
+/
+SHOW ERRORS;
+
+Ceate or Replace Trigger TR_BDS_MMGRADE_diplay
+BEFORE DELETE
+ON MM_GRADE
+
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Inside Before Delete Statement Level Trigger')
+END TR_BDS_MMGRADE_diplay; 
+/
+show errors;
 
 
+Order of Firing of triggers
 
+1 Before statement trigger
+
+2. for each row affected (2x)
+
+	A)Before row level trigger
+
+	B)After row level trigger
+
+3. After statement
 
 
 
