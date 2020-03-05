@@ -542,6 +542,19 @@ Order of Firing of triggers
 3. After statement
 
 
+----------------------------------------------------------------------------------------
+MID-TERM
+---------------------------------------------------------------------------------------
+QUESTION TYPE
+	CODING - 70%
+	FILL IN - 10%
+	T/F - 20%
+
+QUESTION CONTENT
+	FUNCTION - 30%
+	PROCEDURE - 30%
+	TRIGGER - 25%
+	MODULE A,B,C,D - 20%
 
 
 
